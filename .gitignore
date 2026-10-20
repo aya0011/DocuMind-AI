@@ -1,0 +1,17 @@
+﻿.venv/
+venv/
+.pytest_cache/
+.env
+.env.*
+!.env.example
+.vscode/
+.idea/
+*.log
+# Python cache
+__pycache__/
+*.py[cod]
+# Local backup / old implementation
+app/ai/search_before_stemming.py
+
+# Local research document
+attention_paper.pdf
