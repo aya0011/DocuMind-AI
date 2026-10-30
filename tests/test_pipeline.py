@@ -94,47 +94,6 @@ def test_process_pdf_preserves_filename_and_page():
     mock_chunker.assert_called_once()
 
 
-def test_process_pdf_passes_chunk_settings():
-    pdf_content = create_pdf()
-
-    with patch(
-        "app.ai.pipeline.PdfReader"
-    ) as mock_reader_class:
-        mock_page = object()
-        mock_reader_class.return_value.is_encrypted = False
-        mock_reader_class.return_value.pages = [mock_page]
-
-        with patch(
-            "app.ai.pipeline.chunk_document_pages",
-            return_value=[{"text": "Example chunk"}],
-        ) as mock_chunker:
-            with patch.object(
-                type(mock_page),
-                "extract_text",
-                return_value="Example text",
-                create=True,
-            ):
-                chunks = process_pdf(
-                    pdf_content,
-                    "sample.pdf",
-                    chunk_size=80,
-                    overlap=10,
-                )
-
-    assert chunks == [{"text": "Example chunk"}]
-    mock_chunker.assert_called_once_with(
-        [
-            {
-                "filename": "sample.pdf",
-                "page": 1,
-                "text": "Example text",
-            }
-        ],
-        chunk_size=80,
-        overlap=10,
-    )
-
-
 
 def test_process_pdf_passes_chunk_settings():
     pdf_content = create_pdf()

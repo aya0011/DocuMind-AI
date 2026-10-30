@@ -3,28 +3,52 @@ import re
 from typing import Any
 
 
+
+
 def looks_like_heading(line: str) -> bool:
-    """Heuristically detect short headings without fixed title lists."""
+    """Heuristically detect likely section headings."""
     text = line.strip()
 
     if not text:
         return False
 
     words = text.split()
+    lower_text = text.lower()
 
-    if len(words) <= 8 and text.endswith(":"):
-        return True
-
-    if len(words) > 7 or re.search(r"[.!?]$", text):
-        return False
-
+    # Exclude contact details and URLs.
     if (
-        text.lower().startswith(("http://", "https://", "www."))
+        lower_text.startswith(("http://", "https://", "www."))
         or "@" in text
     ):
         return False
 
+    # Explicit numbered headings, e.g. "3 Model Architecture"
+    # or "3.5 Positional Encoding".
+    if re.match(r"^\d+(?:\.\d+)*\.?\s+[A-Za-z]", text):
+        return True
+
+    # Colon-terminated short headings.
+    if len(words) <= 8 and text.endswith(":"):
+        return True
+
+    # Reject long lines and complete sentences.
+    if len(words) > 7 or re.search(r"[.!?]$", text):
+        return False
+
+    # Common sentence openings are unlikely to be headings.
+    if words[0].lower() in {
+        "the", "a", "an", "our", "we", "it", "this",
+        "these", "those", "since", "while", "because",
+    }:
+        return False
+
+    # Require a title-like line rather than any short line.
+    if not any(char.isalpha() for char in text):
+        return False
+
     return True
+
+
 
 
 def split_long_line(line: str, chunk_size: int) -> list[str]:

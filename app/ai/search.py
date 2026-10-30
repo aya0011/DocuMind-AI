@@ -1,4 +1,3 @@
-
 import re
 from typing import Any
 
@@ -36,7 +35,22 @@ def tokenize(text: str) -> list[str]:
 class SemanticSearch:
     """Generic hybrid retrieval using dense search, BM25, and RRF."""
 
-    def __init__(self) -> None:
+    def __init__(
+        self,
+        semantic_weight: float = 0.1,
+        lexical_weight: float = 0.9,
+    ) -> None:
+        if semantic_weight < 0 or lexical_weight < 0:
+            raise ValueError("Search weights cannot be negative.")
+
+        if semantic_weight + lexical_weight <= 0:
+            raise ValueError(
+                "At least one search weight must be positive."
+            )
+
+        self.semantic_weight = semantic_weight
+        self.lexical_weight = lexical_weight
+
         self.index: Any = None
         self.bm25: BM25Okapi | None = None
         self.chunks: list[dict[str, Any]] = []
@@ -152,8 +166,8 @@ class SemanticSearch:
             )
 
             hybrid_score = (
-                0.1 * semantic_contribution
-                + 0.9 * lexical_contribution
+                self.semantic_weight * semantic_contribution
+                + self.lexical_weight * lexical_contribution
             )
 
             if hybrid_score < min_score:

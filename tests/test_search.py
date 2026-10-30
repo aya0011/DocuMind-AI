@@ -207,3 +207,80 @@ def test_search_rejects_query_without_searchable_terms():
             match="The query contains no meaningful searchable terms.",
         ):
             engine.search("the what is")
+
+
+def test_search_accepts_custom_weights():
+    engine = SemanticSearch(
+        semantic_weight=0.5,
+        lexical_weight=0.5,
+    )
+
+    assert engine.semantic_weight == 0.5
+    assert engine.lexical_weight == 0.5
+
+
+@pytest.mark.parametrize(
+    ("semantic_weight", "lexical_weight"),
+    [
+        (-0.1, 1.1),
+        (1.1, -0.1),
+        (0.0, 0.0),
+    ],
+)
+
+def test_search_rejects_invalid_weights(
+    semantic_weight,
+    lexical_weight,
+):
+    with pytest.raises(ValueError):
+        SemanticSearch(
+            semantic_weight=semantic_weight,
+            lexical_weight=lexical_weight,
+        )
+
+def test_search_weights_change_result_order():
+    from unittest.mock import patch
+
+    chunks = [
+        {"text": "transformer attention model"},
+        {"text": "weather sunny forecast"},
+    ]
+
+    embeddings = np.array(
+        [
+            [0.0, 1.0],
+            [1.0, 0.0],
+        ],
+        dtype=np.float32,
+    )
+    query_embedding = np.array(
+        [[1.0, 0.0]],
+        dtype=np.float32,
+    )
+
+    with patch(
+        "app.ai.search.generate_embeddings",
+        side_effect=[embeddings, query_embedding] * 2,
+    ):
+        semantic_engine = SemanticSearch(
+            semantic_weight=1.0,
+            lexical_weight=0.01,
+        )
+        semantic_engine.build_index(chunks)
+        semantic_results = semantic_engine.search(
+            "transformer attention model",
+            top_k=2,
+        )
+
+        lexical_engine = SemanticSearch(
+            semantic_weight=0.01,
+            lexical_weight=1.0,
+        )
+        lexical_engine.build_index(chunks)
+        lexical_results = lexical_engine.search(
+            "transformer attention model",
+            top_k=2,
+        )
+
+    assert semantic_results[0]["text"] == "weather sunny forecast"
+    assert lexical_results[0]["text"] == "transformer attention model"

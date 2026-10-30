@@ -1,0 +1,27 @@
+﻿[
+  {
+    "question": "What is the Transformer architecture based on?",
+    "expected_terms": ["attention", "recurrent", "convolution"],
+    "relevant_pages": [1, 2]
+  },
+  {
+    "question": "What is the purpose of positional encoding?",
+    "expected_terms": ["position", "sequence", "order"],
+    "relevant_pages": [6]
+  },
+  {
+    "question": "What is multi-head attention?",
+    "expected_terms": ["attention", "representation", "parallel"],
+    "relevant_pages": [4, 5]
+  },
+  {
+    "question": "Which optimizer was used to train the Transformer?",
+    "expected_terms": ["adam"],
+    "relevant_pages": [7]
+  },
+  {
+    "question": "What is the computational advantage of self-attention over recurrent layers?",
+    "expected_terms": ["complexity", "sequential", "parallel"],
+    "relevant_pages": [6, 7]
+  }
+]
