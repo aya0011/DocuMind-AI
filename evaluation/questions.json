@@ -23,5 +23,30 @@
     "question": "What is the computational advantage of self-attention over recurrent layers?",
     "expected_terms": ["complexity", "sequential", "parallel"],
     "relevant_pages": [6, 7]
+  },
+  {
+    "question": "What scaling factor is used in scaled dot-product attention?",
+    "expected_terms": ["square root", "dk", "scale"],
+    "relevant_pages": [4]
+  },
+  {
+    "question": "How many parallel attention heads did the Transformer use?",
+    "expected_terms": ["8", "heads", "parallel"],
+    "relevant_pages": [5]
+  },
+  {
+    "question": "What activation function is used in the feed-forward network?",
+    "expected_terms": ["relu", "linear", "transformations"],
+    "relevant_pages": [5]
+  },
+  {
+    "question": "What hardware was used to train the Transformer?",
+    "expected_terms": ["NVIDIA", "P100", "GPUs"],
+    "relevant_pages": [7]
+  },
+  {
+    "question": "How many warmup steps were used during training?",
+    "expected_terms": ["4000", "warmup", "steps"],
+    "relevant_pages": [7]
   }
 ]

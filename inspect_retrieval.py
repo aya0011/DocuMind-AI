@@ -9,7 +9,7 @@ chunks = process_pdf(
     filename=pdf_path.name,
 )
 
-for page_number in [1, 2, 3, 10]:
+for page_number in [4, 5, 6, 7]:
     page_chunks = [
         chunk for chunk in chunks
         if chunk["page"] == page_number
